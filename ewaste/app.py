@@ -1,6 +1,23 @@
 import streamlit as st
 from supabase import create_client, Client
 
+st.title("E-Waste Disposal Habits Survey")
+
+st.markdown(
+    """
+    <style>
+    .stMultiSelect span[data-baseweb="tag"] {
+        white-space: normal !important;
+        height: auto !important;
+    }
+    div[data-baseweb="select"] > div {
+        height: auto !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -91,8 +108,8 @@ with st.form("comprehensive_ewaste_form"):
     )
     
     st.subheader("8. Motivations")
-    incentive = st.selectbox(
-        "What would motivate you the most to recycle e-waste more frequently?",
+    incentive = st.multiselect(
+        "What would motivate you the most to recycle e-waste more frequently? (Select all that apply)",
         [
             "Financial incentives (cashback, store discounts, tax rebates)",
             "Convenient local pickup services right from home",
@@ -121,7 +138,7 @@ with st.form("comprehensive_ewaste_form"):
                     "common_items": ", ".join(common_items),
                     "barriers": ", ".join(barriers),
                     "awareness_level": awareness,
-                    "preferred_incentive": incentive
+                    "preferred_incentive": ", ".join(incentive)
                 }).execute()
                 
                 st.success("Thank you! Your survey response has been recorded securely.")
